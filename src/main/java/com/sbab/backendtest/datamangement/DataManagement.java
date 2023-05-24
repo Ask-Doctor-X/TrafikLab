@@ -23,7 +23,7 @@ public class DataManagement implements DataManager{
     public static final String STOP_POINT_NAME = "StopPointName";
 
 
-    public List<String> createLineModelArrayFromJson(String response){
+    public List<String> getTopTenBusStops(String response){
 
         JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
         JsonObject responseData = jsonObject.getAsJsonObject(RESPONSE_DATA).getAsJsonObject();
@@ -146,6 +146,7 @@ public class DataManagement implements DataManager{
 
         return finalStopPointNames;
     }
+    
 
 
 }

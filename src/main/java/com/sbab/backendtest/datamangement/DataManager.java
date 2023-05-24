@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface DataManager {
 
-    public List<String> createLineModelArrayFromJson(String response);
+    public List<String> getTopTenBusStops(String response);
 
     public List<String> getBusStopName(String response);
     public List<String> arrangeNumberOfStops(List<Line> arr);

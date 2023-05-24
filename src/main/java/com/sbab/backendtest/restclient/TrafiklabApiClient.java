@@ -42,10 +42,10 @@ public class TrafiklabApiClient implements FetchDataFromTrafiklab{
                     .addParameter(DEFAULT_TRANSPORT_MODE_CODE, DEFAULT_TRANSPORT_MODE_CODE_VALUE)
                     .build();
             httpGet.setUri(uri);
-            busLines = data.createLineModelArrayFromJson(EntityUtils.toString((client.execute(httpGet)).getEntity()));
+            busLines = data.getTopTenBusStops(EntityUtils.toString((client.execute(httpGet)).getEntity()));
 
-        } catch (IOException | ParseException | URISyntaxException e) {
-            logger.severe("I/O Exception Occured : "+e.getMessage());
+        } catch (ParseException | URISyntaxException e) {
+            logger.severe("Exception Occured : "+e.getMessage());
         } finally {
             client.close();
         }
@@ -67,8 +67,8 @@ public class TrafiklabApiClient implements FetchDataFromTrafiklab{
             httpGet.setUri(uri);
             finalBusStopNames = data.getBusStopName(EntityUtils.toString((client.execute(httpGet)).getEntity()));
 
-        } catch (IOException | ParseException | URISyntaxException e) {
-            logger.severe("I/O Exception Occured : "+e.getMessage());
+        } catch (ParseException | URISyntaxException e) {
+            logger.severe("Exception Occured : "+e.getMessage());
         } finally {
             client.close();
         }
