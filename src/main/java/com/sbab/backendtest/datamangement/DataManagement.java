@@ -21,11 +21,9 @@ public class DataManagement implements DataManager{
     public static final String JOURNEY_PATTERN_POINT_NUMBER = "JourneyPatternPointNumber";
     public static final String STOP_POINT_NUMBER = "StopPointNumber";
     public static final String STOP_POINT_NAME = "StopPointName";
-    public static final String BUSLINE_DEFAULT_MESSAGE = "Top 10 bus lines with most stops are : ";
-    public static final String BUSSTOP_DEFAULT_MESSAGE = "Bus stop name for busline having most bus stop : ";
 
 
-    public void createLineModelArrayFromJson(String response){
+    public List<String> createLineModelArrayFromJson(String response){
 
         JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
         JsonObject responseData = jsonObject.getAsJsonObject(RESPONSE_DATA).getAsJsonObject();
@@ -40,10 +38,11 @@ public class DataManagement implements DataManager{
             lineElement.setUniqueStopPointNumber(lineObject.get(JOURNEY_PATTERN_POINT_NUMBER).getAsString());
             sortedData.add(lineElement);
         }
-        arrangeNumberOfStops(sortedData);
+        return arrangeNumberOfStops(sortedData);
     }
 
-    public void arrangeNumberOfStops(List<Line> arr){
+    @Override
+    public List<String> arrangeNumberOfStops(List<Line> arr){
         Map<String, Integer> countMap = new HashMap<>();
         int lastLineNumber = 0;
         int currentLineNumber = 0;
@@ -51,25 +50,21 @@ public class DataManagement implements DataManager{
 
         for(Line line : arr){
             currentLineNumber = Integer.valueOf(line.getLineNumber());
-
             if(currentLineNumber == lastLineNumber){
                 count++;
-
             }else{
                 countMap.put(String.valueOf(lastLineNumber), count);
                 count = 1;
                 lastLineNumber = currentLineNumber;
-
             }
         }
 
-        printMaps(countMap);
+        return sortMaps(countMap);
     }
-
-    public void printMaps(Map<String, Integer> map){
+    @Override
+    public List<String> sortMaps(Map<String, Integer> map){
         List<Integer> stops = new ArrayList<>();
         int count = 0;
-        int lastElement = 0;
 
         for(Map.Entry<String, Integer> checkMap : map.entrySet()){
                stops.add(checkMap.getValue());
@@ -84,29 +79,36 @@ public class DataManagement implements DataManager{
             topTenBuslineStops.add(stop);
             count++;
         }
-
-        System.out.println(BUSLINE_DEFAULT_MESSAGE);
-
-        for(Integer value : topTenBuslineStops) {
+        return returnTopBusLines(map, topTenBuslineStops);
+    }
+    @Override
+    public List<String> returnTopBusLines(Map<String, Integer> map, List<Integer> topTenBusLineStops){
+        int lastElement = 0;
+        List<String> topBusLines = new ArrayList<>();
+        for(Integer value : topTenBusLineStops) {
             if(lastElement == value)
                 continue;
             for (Map.Entry<String, Integer> checkMap : map.entrySet()) {
                 if(Objects.equals(checkMap.getValue(), value)) {
                     if(validCount == 0)
                         busLineWithMostNumberOfStops = Integer.valueOf(checkMap.getKey());
-                    System.out.println(checkMap.getKey());
+                    topBusLines.add(checkMap.getKey());
                     validCount++;
                 }
             }
             lastElement = value;
         }
 
+        return topBusLines;
     }
 
-    public void getBusStopName(String response){
+    @Override
+    public List<String> getBusStopName(String response){
         List<Integer> stopPoints = new ArrayList<>();
         List<String> stopPointNames = new ArrayList<>();
+        List<String> finalStopPointNames = new ArrayList<>();
         List<Stop> stopList = new ArrayList<>();
+        String busStopName = null;
 
         JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
         JsonObject responseData = jsonObject.getAsJsonObject(RESPONSE_DATA).getAsJsonObject();
@@ -134,16 +136,15 @@ public class DataManagement implements DataManager{
             }
 
     }
-        System.out.println(BUSSTOP_DEFAULT_MESSAGE);
 
-        String busStopName = null;
         for (String name : stopPointNames){
            if(name.equalsIgnoreCase(busStopName))
                 continue;
-            System.out.println(name);
+            finalStopPointNames.add(name);
             busStopName = name;
         }
 
+        return finalStopPointNames;
     }
 
 

@@ -1,9 +1,18 @@
 package com.sbab.backendtest.datamangement;
 
 
+import com.sbab.backendtest.model.Line;
+
+import java.util.List;
+import java.util.Map;
+
 public interface DataManager {
 
-    public void createLineModelArrayFromJson(String response);
+    public List<String> createLineModelArrayFromJson(String response);
 
-    void getBusStopName(String response);
+    public List<String> getBusStopName(String response);
+    public List<String> arrangeNumberOfStops(List<Line> arr);
+
+    public List<String> sortMaps(Map<String, Integer> map);
+    public List<String> returnTopBusLines(Map<String, Integer> map, List<Integer> topTenBusLineStops);
 }
