@@ -14,9 +14,10 @@ import java.util.logging.Logger;
 public class
 TrafiklabApplication {
 	static Logger logger = Logger.getLogger(TrafiklabApplication.class.getName());
-	public static final String BUSLINE_DEFAULT_MESSAGE = "Top 10 bus lines with most stops are : ";
-	public static final String BUSSTOP_DEFAULT_MESSAGE = "Bus stop name for busline having most bus stop : ";
+	public static final String BUS_LINE_DEFAULT_MESSAGE = "Top 10 bus lines with most stops are : ";
+	public static final String BUS_STOP_DEFAULT_MESSAGE = "Bus stop name for busline having most bus stop : ";
 
+	/* Main method for application run */
 	public static void main(String[] args) throws IOException {
 		SpringApplication.run(TrafiklabApplication.class, args);
 
@@ -31,12 +32,12 @@ TrafiklabApplication {
 			logger.severe("I/O Exception Occured : "+e.getMessage());
 		}
 
-		System.out.println(BUSLINE_DEFAULT_MESSAGE);
+		System.out.println(BUS_LINE_DEFAULT_MESSAGE);
 		for(String busline : busLineData){
 			System.out.println(busline);
 		}
 		System.out.println();
-		System.out.println(BUSSTOP_DEFAULT_MESSAGE);
+		System.out.println(BUS_STOP_DEFAULT_MESSAGE);
 
 		for(String busstop : finalBusStopNames){
 			System.out.println(busstop);

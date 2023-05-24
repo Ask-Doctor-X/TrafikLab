@@ -29,6 +29,10 @@ public class TrafiklabApiClient implements FetchDataFromTrafiklab{
     public static final String DEFAULT_TRANSPORT_MODE_CODE = "DefaultTransportModeCode";
     public static final String DEFAULT_TRANSPORT_MODE_CODE_VALUE = "BUS";
 
+    /*
+    * REST Client method to get response of bus line API from Trafiklab.se
+    *
+    * */
     @Override
     public List<String> sendHttpBuslineRequest() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
@@ -52,6 +56,10 @@ public class TrafiklabApiClient implements FetchDataFromTrafiklab{
         return busLines;
     }
 
+    /*
+    * REST Client method to get response of bus stop API from Trafiklab.se
+    *
+    * */
     @Override
     public List<String> sendHttpBusStopRequest() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();

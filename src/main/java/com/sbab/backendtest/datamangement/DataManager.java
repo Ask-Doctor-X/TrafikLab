@@ -11,7 +11,7 @@ public interface DataManager {
     public List<String> getTopTenBusStops(String response);
 
     public List<String> getBusStopName(String response);
-    public List<String> arrangeNumberOfStops(List<Line> arr);
+    public List<String> countNumberOfStops(List<Line> arr);
 
     public List<String> sortMaps(Map<String, Integer> map);
     public List<String> returnTopBusLines(Map<String, Integer> map, List<Integer> topTenBusLineStops);

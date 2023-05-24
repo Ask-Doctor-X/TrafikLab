@@ -22,7 +22,9 @@ public class DataManagement implements DataManager{
     public static final String STOP_POINT_NUMBER = "StopPointNumber";
     public static final String STOP_POINT_NAME = "StopPointName";
 
-
+    /*
+    *  Arranging JSON element to Line model class
+    * */
     public List<String> getTopTenBusStops(String response){
 
         JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
@@ -38,11 +40,15 @@ public class DataManagement implements DataManager{
             lineElement.setUniqueStopPointNumber(lineObject.get(JOURNEY_PATTERN_POINT_NUMBER).getAsString());
             sortedData.add(lineElement);
         }
-        return arrangeNumberOfStops(sortedData);
+        return countNumberOfStops(sortedData);
     }
 
+    /*
+    * Counting number of stops for each line and arranging them into a Map
+    *
+    * */
     @Override
-    public List<String> arrangeNumberOfStops(List<Line> arr){
+    public List<String> countNumberOfStops(List<Line> arr){
         Map<String, Integer> countMap = new HashMap<>();
         int lastLineNumber = 0;
         int currentLineNumber = 0;
@@ -61,6 +67,9 @@ public class DataManagement implements DataManager{
 
         return sortMaps(countMap);
     }
+    /*
+    *   Sorting the number of stops from in descending order and get the top 10 as list
+    * */
     @Override
     public List<String> sortMaps(Map<String, Integer> map){
         List<Integer> stops = new ArrayList<>();
@@ -81,6 +90,10 @@ public class DataManagement implements DataManager{
         }
         return returnTopBusLines(map, topTenBuslineStops);
     }
+    /*
+    * Mapping the top 10 bus lines with most number of stops with corresponding
+    * bus line number from the map and returning the list of bus lines.
+    * */
     @Override
     public List<String> returnTopBusLines(Map<String, Integer> map, List<Integer> topTenBusLineStops){
         int lastElement = 0;
@@ -101,7 +114,10 @@ public class DataManagement implements DataManager{
 
         return topBusLines;
     }
-
+    /*
+    * Casting JSON response to Stop model class and getting
+    * the names of all the bus stops for the corresponding bus line
+    * */
     @Override
     public List<String> getBusStopName(String response){
         List<Integer> stopPoints = new ArrayList<>();
