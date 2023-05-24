@@ -4,14 +4,6 @@ public class Stop {
     int stopPointNumber;
     String stopPointName;
 
-    @Override
-    public String toString() {
-        return "Stop{" +
-                "stopPointNumber=" + stopPointNumber +
-                ", stopPointName='" + stopPointName + '\'' +
-                '}';
-    }
-
     public int getStopPointNumber() {
         return stopPointNumber;
     }
@@ -27,4 +19,13 @@ public class Stop {
     public void setStopPointName(String stopPointName) {
         this.stopPointName = stopPointName;
     }
+
+    @Override
+    public String toString() {
+        return "Stop{" +
+                "stopPointNumber=" + stopPointNumber +
+                ", stopPointName='" + stopPointName + '\'' +
+                '}';
+    }
+
 }
