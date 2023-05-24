@@ -28,8 +28,8 @@ TrafiklabApplication {
 		try{
 			busLineData = data.sendHttpBuslineRequest();
 			finalBusStopNames = data.sendHttpBusStopRequest();
-		}catch (IOException e){
-			logger.severe("I/O Exception Occured : "+e.getMessage());
+		}catch (Exception e){
+			logger.severe("Exception Occured : "+e.getMessage());
 		}
 
 		System.out.println(BUS_LINE_DEFAULT_MESSAGE);
