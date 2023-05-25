@@ -53,20 +53,27 @@ public class DataManagement implements DataManager{
         int lastLineNumber = 0;
         int currentLineNumber = 0;
         int count = 0;
+        int size = 0;
 
-        for(Line line : arr){
+        for(Line line : arr) {
             currentLineNumber = Integer.valueOf(line.getLineNumber());
-            if(currentLineNumber == lastLineNumber){
+            if (size == arr.size() -1 && lastLineNumber == currentLineNumber){
                 count++;
+                countMap.put(String.valueOf(lastLineNumber), count);
+            }if(currentLineNumber == lastLineNumber){
+                count++;
+                size++;
             }else{
                 countMap.put(String.valueOf(lastLineNumber), count);
                 count = 1;
                 lastLineNumber = currentLineNumber;
+                size++;
             }
         }
 
         return sortMaps(countMap);
     }
+
     /*
     *   Sorting the number of stops from in descending order and get the top 10 as list
     * */
