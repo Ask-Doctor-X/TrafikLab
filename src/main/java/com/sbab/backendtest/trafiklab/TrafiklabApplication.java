@@ -4,6 +4,8 @@ import com.sbab.backendtest.restclient.FetchDataFromTrafiklab;
 import com.sbab.backendtest.restclient.TrafiklabApiClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,7 @@ TrafiklabApplication {
 	public static void main(String[] args) throws IOException {
 		SpringApplication.run(TrafiklabApplication.class, args);
 
-		FetchDataFromTrafiklab data = new TrafiklabApiClient();
+		FetchDataFromTrafiklab data = new TrafiklabApiClient(new RestTemplateBuilder());
 		List<String> busLineData = new ArrayList<>();
 		List<String> finalBusStopNames = new ArrayList<>();
 

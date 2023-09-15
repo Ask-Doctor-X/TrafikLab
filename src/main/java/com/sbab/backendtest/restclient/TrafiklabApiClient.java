@@ -8,16 +8,25 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.net.URIBuilder;
+import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientSsl;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
 public class TrafiklabApiClient implements FetchDataFromTrafiklab{
     DataManager data = new DataManagement();
+
+    private final RestTemplate restTemplate;
 
     static Logger logger = Logger.getLogger(TrafiklabApiClient.class.getName());
     public static final String BASE_URL = "https://api.sl.se/api2/linedata.json";
@@ -29,32 +38,45 @@ public class TrafiklabApiClient implements FetchDataFromTrafiklab{
     public static final String DEFAULT_TRANSPORT_MODE_CODE = "DefaultTransportModeCode";
     public static final String DEFAULT_TRANSPORT_MODE_CODE_VALUE = "BUS";
 
+    public TrafiklabApiClient(RestTemplateBuilder restTemplateBuilder) {
+        this.restTemplate = restTemplateBuilder.build();
+    }
+
+    Map<String, String> getCommonParams(){
+        Map<String, String> params = new HashMap<>();
+        params.put(KEY_NAME, KEY_VALUE);
+        params.put(MODEL_NAME, MODEL_JOURNEY_VALUE);
+        params.put(DEFAULT_TRANSPORT_MODE_CODE, DEFAULT_TRANSPORT_MODE_CODE_VALUE);
+
+        return params;
+    }
+
     /*
     * REST Client method to get response of bus line API from Trafiklab.se
     *
-    * */
+     */
+
     @Override
     public List<String> sendHttpBuslineRequest() throws IOException {
-        CloseableHttpClient client = HttpClients.createDefault();
-        List<String> busLines = new ArrayList<>();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        try {
-            HttpGet httpGet = new HttpGet(BASE_URL);
-            URI uri = new URIBuilder(httpGet.getUri())
-                    .addParameter(KEY_NAME, KEY_VALUE)
-                    .addParameter(MODEL_NAME, MODEL_JOURNEY_VALUE)
-                    .addParameter(DEFAULT_TRANSPORT_MODE_CODE, DEFAULT_TRANSPORT_MODE_CODE_VALUE)
-                    .build();
-            httpGet.setUri(uri);
-            busLines = data.getTopTenBusStops(EntityUtils.toString((client.execute(httpGet)).getEntity()));
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL+"?"+KEY_NAME+"={key}&"+MODEL_NAME+"={model}&"+DEFAULT_TRANSPORT_MODE_CODE+"={DefaultTransportModeCode}",
+                HttpMethod.GET,
+                entity,
+                String.class,
+                KEY_VALUE,
+                MODEL_JOURNEY_VALUE,
+                DEFAULT_TRANSPORT_MODE_CODE_VALUE
+        );
 
-        } catch (ParseException | URISyntaxException e) {
-            logger.severe("Exception Occured : "+e.getMessage());
-        } finally {
-            client.close();
-        }
-        return busLines;
+        return data.getTopTenBusStops(response.getBody());
+
     }
+
+
 
     /*
     * REST Client method to get response of bus stop API from Trafiklab.se
@@ -62,25 +84,21 @@ public class TrafiklabApiClient implements FetchDataFromTrafiklab{
     * */
     @Override
     public List<String> sendHttpBusStopRequest() throws IOException {
-        CloseableHttpClient client = HttpClients.createDefault();
-        List<String> finalBusStopNames = new ArrayList<>();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        try {
-            HttpGet httpGet = new HttpGet(BASE_URL);
-            URI uri = new URIBuilder(httpGet.getUri())
-                    .addParameter(KEY_NAME, KEY_VALUE)
-                    .addParameter(MODEL_NAME, MODEL_STOP_VALUE)
-                    .addParameter(DEFAULT_TRANSPORT_MODE_CODE, DEFAULT_TRANSPORT_MODE_CODE_VALUE)
-                    .build();
-            httpGet.setUri(uri);
-            finalBusStopNames = data.getBusStopName(EntityUtils.toString((client.execute(httpGet)).getEntity()));
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL + "?" + KEY_NAME + "={key}&" + MODEL_NAME + "={model}&" + DEFAULT_TRANSPORT_MODE_CODE + "={DefaultTransportModeCode}",
+                HttpMethod.GET,
+                entity,
+                String.class,
+                KEY_VALUE,
+                MODEL_STOP_VALUE,
+                DEFAULT_TRANSPORT_MODE_CODE_VALUE
+        );
 
-        } catch (ParseException | URISyntaxException e) {
-            logger.severe("Exception Occured : "+e.getMessage());
-        } finally {
-            client.close();
-        }
-        return  finalBusStopNames;
+        return data.getBusStopName(response.getBody());
     }
 
 
